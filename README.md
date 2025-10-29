@@ -31,7 +31,7 @@ graph LR
 - S2 (FastAPI): serviço HTTP que recebe as requisições do S1 e orquestra os bancos.
 ---
 ## 📚 Justificativa de cada banco & como o S2 usa
-1) Supabase / PostgreSQL (Relacional)
+1. Supabase / PostgreSQL (Relacional)
 
 Por quê: integridade, unicidade de e-mail, transações; ideal para autenticação e logs.
 
@@ -43,7 +43,7 @@ Por quê: integridade, unicidade de e-mail, transações; ideal para autenticaç
 
 - No S2: POST /usuarios, POST /auth/login e logging de todas as chamadas do S1.
 
-2) MongoDB (Documento / Catálogo)
+2. MongoDB (Documento / Catálogo)
 
 Por quê: schema flexível (filme ≠ série), índice de texto para busca.
 
@@ -57,7 +57,7 @@ Por quê: schema flexível (filme ≠ série), índice de texto para busca.
 
 - No S2: depois de obter IDs de títulos via Neo4j, busca os documentos no Mongo (compatível com _id ObjectId ou string) e aplica q (texto).
 
-3) Neo4j (Grafo)
+3. Neo4j (Grafo)
 
 Por quê: consultas por relacionamento/navegação e interseção de filtros.
 
