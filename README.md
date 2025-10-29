@@ -1,10 +1,9 @@
-# DatabaseFlix — Plataforma de streaming (Projeto Multi-banco de Dados)
-
+# DatabaseFlix — Plataforma de streaming 
 ---
 
-## Tema escolhido (explicação)
+## Tema escolhido 
 
-Escolhemos uma plataforma de streaming porque ela reflete um cenário real em que diferentes partes do sistema têm necessidades distintas e complementares. O cadastro e a autenticação de usuários exigem integridade, unicidade de e-mail e transações confiáveis; o catálogo de títulos precisa de flexibilidade de schema para lidar com filmes e séries (com campos diferentes, como duração ou temporadas/episódios) e também de busca por texto; e a experiência do usuário demanda relacionamentos claros entre pessoas, obras, gêneros e atores, além de funcionalidades sociais como curtidas. Esse conjunto de requisitos nos permite aplicar, de forma coerente, três tecnologias de bancos de dados – relacional, documentos e grafo – e mostrar na prática como a escolha do banco é guiada pelo tipo de dado e pelo padrão de consulta que a aplicação realiza.
+Escolhemos uma plataforma de streaming porque ela reflete um cenário em que diferentes partes do sistema têm multiplas necessidades. O cadastro e a autenticação de usuários exigem uma das maiores funcionalidades de um banco de dadados; O catálogo de títulos precisa de flexibilidade de multiplas informações para funcionar, além de integrar completamente com os bancos com sua funcionalidade de realizar buscas de obras; A experiência do usuário utiliza relacionamentos claros entre pessoas, obras, gêneros e atores, esse conjunto de requisitos nos permite aplicar, três tipos de bancos de dados – relacional, documentos e grafo – e mostrar na prática como a escolha do banco é guiada pelo tipo de dado e pelo padrão de consulta que a aplicação realiza.
 
 ---
 
@@ -16,16 +15,16 @@ graph LR
 - API <--> DOC[(MongoDB - Catálogo)]  
 - API <--> GRAFO[(Neo4j - Relações)]
 
-- S1 (Streamlit): interface “tipo site” em Python (sem HTML/CSS), com telas de Login, Cadastro, Catálogo, Detalhe e Admin.  
-- S2 (FastAPI): serviço HTTP que recebe as requisições do S1 e orquestra os bancos.
+- S1 (Streamlit): interface baseada em um site utilizando Python, com telas de Login, Cadastro, Catálogo, Detalhe e Admin.  
+- S2 (FastAPI): serviço HTTP que recebe as informações do S1 e comanda os bancos.
 
 ---
 
 ## Justificativa de cada banco e como o S2 usa
 
-**1. Supabase / PostgreSQL (Relacional)**
+**1. Supabase(Relacional)**
 
-- Por quê: integridade, unicidade de e-mail, transações; ideal para autenticação e logs.
+- Por quê: integridade, unicidade de e-mail; ideal para autenticação e logs.
 - Armazena:
   - `usuarios(id, nome, email UNIQUE, senha_hash, is_admin)`
   - `logs_s1(id, endpoint, metodo, req_payload, res_payload, status_code, latency_ms, erro, user_id, ts)`
@@ -85,8 +84,6 @@ Observações de robustez:
   - MongoDB Atlas → `MONGODB_URI`, `MONGODB_DBNAME`
   - Neo4j (AuraDB ou servidor) → `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD`
 
-As credenciais são lidas em `db/*.py`. Não publique segredos reais em repositórios públicos.
-
 ### Estrutura de pastas
 
 Projeto/
@@ -95,10 +92,10 @@ Projeto/
 ├─ s2/
 │ └─ main.py
 ├─ db/
-│ ├─ supabase_rest.py
-│ ├─ mongo.py
-│ └─ neo4j_db.py
-└─ sanity_check.py
+  ├─ supabase_rest.py
+  ├─ mongo.py
+  └─ neo4j_db.py
+
 
 ### Instalar dependências
 
@@ -113,8 +110,6 @@ Edite os arquivos:
 - `db/supabase_rest.py` → `SUPABASE_URL`, `SUPABASE_KEY`
 - `db/mongo.py` → `MONGODB_URI`, `MONGODB_DBNAME`
 - `db/neo4j_db.py` → `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD`
-
-Se a instância Neo4j utilizar certificado autoassinado, a URI `neo4j+ssc://` pode ser necessária.
 
 ### Subir o S2 (API)
 = py -m uvicorn s2.main:app --reload --port 8000
@@ -140,8 +135,4 @@ Abra o link mostrado (geralmente `http://localhost:8501`).
 
 Esses três serviços devem estar acessíveis e corretamente configurados para a aplicação funcionar como esperado.
 
-### Observações finais
 
-- Este projeto não implementa cobrança de assinatura.  
-- Mantenha as credenciais fora de repositórios públicos.  
-- Em caso de problemas com curtidos, valide primeiro o Neo4j (`/grafo/curtidos?user_id=...`) e depois confirme se os `_id` retornados existem no Mongo; por fim, teste `/catalogo?curtidos=1&user_id=...`.
