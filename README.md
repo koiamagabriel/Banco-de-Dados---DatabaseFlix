@@ -1,6 +1,6 @@
-# SVOD — Plataforma de streaming (Projeto Multi-banco de Dados)
+# DatabaseFlix — Plataforma de streaming (Projeto Multi-banco de Dados)
 
-> **Tema**: Uma plataforma simples de streaming (sem cobrança real) com **catálogo** de filmes/séries, **login/cadastro**, filtros por **gêneros** e **atores**, e marcação de **“curtidos”** (likes).  
+> **Tema**: Uma plataforma simples de streaming com **catálogo** de filmes/séries, **login/cadastro**, filtros por **gêneros** e **atores**, e marcação de **“curtidos”** (likes).  
 > **Objetivo acadêmico**: estudar **armazenamento** e **consulta** em múltiplos bancos, escolhendo o tipo de banco **pelo uso do dado**.
 
 ---
