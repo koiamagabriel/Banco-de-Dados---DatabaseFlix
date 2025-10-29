@@ -3,7 +3,7 @@
 
 ## Tema escolhido 
 
-Escolhemos uma plataforma de streaming porque ela reflete um cenário em que diferentes partes do sistema têm multiplas necessidades. O cadastro e a autenticação de usuários exigem uma das maiores funcionalidades de um banco de dadados; O catálogo de títulos precisa de flexibilidade de multiplas informações para funcionar, além de integrar completamente com os bancos com sua funcionalidade de realizar buscas de obras; A experiência do usuário utiliza relacionamentos claros entre pessoas, obras, gêneros e atores, esse conjunto de requisitos nos permite aplicar, três tipos de bancos de dados – relacional, documentos e grafo – e mostrar na prática como a escolha do banco é guiada pelo tipo de dado e pelo padrão de consulta que a aplicação realiza.
+  Escolhemos uma plataforma de streaming porque ela reflete um cenário em que diferentes partes do sistema têm multiplas necessidades. O cadastro e a autenticação de usuários exigem uma das maiores funcionalidades de um banco de dadados; O catálogo de títulos precisa de flexibilidade de multiplas informações para funcionar, além de integrar completamente com os bancos com sua funcionalidade de realizar buscas de obras; A experiência do usuário utiliza relacionamentos claros entre pessoas, obras, gêneros e atores, esse conjunto de requisitos nos permite aplicar, três tipos de bancos de dados – relacional, documentos e grafo – e mostrar na prática como a escolha do banco é guiada pelo tipo de dado e pelo padrão de consulta que a aplicação realiza.
 
 ---
 
