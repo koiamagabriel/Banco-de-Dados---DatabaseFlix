@@ -75,7 +75,7 @@ Observações de robustez:
 
 ---
 
-## Como executar o projeto
+## Como executar o projeto:
 
 ### Pré-requisitos
 
@@ -89,3 +89,59 @@ As credenciais são lidas em `db/*.py`. Não publique segredos reais em reposit�
 
 ### Estrutura de pastas
 
+Projeto/
+├─ s1/
+│ └─ app.py
+├─ s2/
+│ └─ main.py
+├─ db/
+│ ├─ supabase_rest.py
+│ ├─ mongo.py
+│ └─ neo4j_db.py
+└─ sanity_check.py
+
+### Instalar dependências
+
+No PowerShell (Windows):
+- py -m pip install --upgrade pip
+- py -m pip install fastapi "uvicorn[standard]" pydantic[email] requests streamlit pymongo neo4j bcrypt certifi
+
+### Configurar conexões
+
+Edite os arquivos:
+
+- `db/supabase_rest.py` → `SUPABASE_URL`, `SUPABASE_KEY`
+- `db/mongo.py` → `MONGODB_URI`, `MONGODB_DBNAME`
+- `db/neo4j_db.py` → `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD`
+
+Se a instância Neo4j utilizar certificado autoassinado, a URI `neo4j+ssc://` pode ser necessária.
+
+### Subir o S2 (API)
+= py -m uvicorn s2.main:app --reload --port 8000
+
+### Subir o S1 (UI)
+
+Em outro terminal:
+
+Abra o link mostrado (geralmente `http://localhost:8501`).
+
+### Primeiro uso
+
+1. Cadastre-se na tela de cadastro.  
+2. Marque o usuário como admin (no Supabase, `usuarios.is_admin=true`, ou via `POST /usuarios` com `is_admin: true`).  
+3. Acesse a tela Admin e cadastre títulos (filmes ou séries).  
+4. No Catálogo, utilize busca (`q`), filtros por gêneros/ator e o botão de Curtidos; nos cards e nos detalhes há botões de Gostei/Descurtir.
+
+### Serviços que devem ser usados
+
+- Supabase (PostgreSQL) para autenticação de usuários e logs de chamadas do S1.  
+- MongoDB Atlas para o catálogo de títulos (documentos flexíveis, índice de texto).  
+- Neo4j para os relacionamentos entre usuários, títulos, gêneros e atores, e para o controle de curtidas.
+
+Esses três serviços devem estar acessíveis e corretamente configurados para a aplicação funcionar como esperado.
+
+### Observações finais
+
+- Este projeto não implementa cobrança de assinatura.  
+- Mantenha as credenciais fora de repositórios públicos.  
+- Em caso de problemas com curtidos, valide primeiro o Neo4j (`/grafo/curtidos?user_id=...`) e depois confirme se os `_id` retornados existem no Mongo; por fim, teste `/catalogo?curtidos=1&user_id=...`.
