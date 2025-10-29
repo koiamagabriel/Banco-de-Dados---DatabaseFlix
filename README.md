@@ -17,9 +17,6 @@ Escolhemos streaming porque divide naturalmente o problema em partes com necessi
 
 ## 🧱 Arquitetura (S1/S2 e bancos)
 
-```mermaid
-
-
 graph LR
   UI[S1 - UI (Streamlit)] <--> API[S2 - FastAPI]
   API <--> RDB[(Supabase/Postgres)]
