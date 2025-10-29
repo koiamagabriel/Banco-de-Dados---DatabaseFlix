@@ -29,51 +29,51 @@ graph LR
 - S1 (Streamlit): interface “tipo site” em Python (sem HTML/CSS), com telas de Login, Cadastro, Catálogo, Detalhe e Admin.
 
 - S2 (FastAPI): serviço HTTP que recebe as requisições do S1 e orquestra os bancos.
-
+---
 ## 📚 Justificativa de cada banco & como o S2 usa
 1) Supabase / PostgreSQL (Relacional)
 
 Por quê: integridade, unicidade de e-mail, transações; ideal para autenticação e logs.
 
-Armazena:
+- Armazena:
 
-usuarios(id, nome, email UNIQUE, senha_hash, is_admin)
+  - usuarios(id, nome, email UNIQUE, senha_hash, is_admin)
 
-logs_s1(id, endpoint, metodo, req_payload, res_payload, status_code, latency_ms, erro, user_id, ts)
+  - logs_s1(id, endpoint, metodo, req_payload, res_payload, status_code, latency_ms, erro, user_id, ts)
 
-No S2: POST /usuarios, POST /auth/login e logging de todas as chamadas do S1.
+- No S2: POST /usuarios, POST /auth/login e logging de todas as chamadas do S1.
 
 2) MongoDB (Documento / Catálogo)
 
 Por quê: schema flexível (filme ≠ série), índice de texto para busca.
 
-Coleção titulos:
+- Coleção titulos:
 
-Comum: titulo, tipo (filme|serie), sinopse, classificacao, generos[], elenco[], ano, disponivel
+  - Comum: titulo, tipo (filme|serie), sinopse, classificacao, generos[], elenco[], ano, disponivel
 
-Filme: duracao_min
+  - Filme: duracao_min
 
-Série: temporadas, eps_por_temp[]
+  - Série: temporadas, eps_por_temp[]
 
-No S2: depois de obter IDs de títulos via Neo4j, busca os documentos no Mongo (compatível com _id ObjectId ou string) e aplica q (texto).
+- No S2: depois de obter IDs de títulos via Neo4j, busca os documentos no Mongo (compatível com _id ObjectId ou string) e aplica q (texto).
 
 3) Neo4j (Grafo)
 
 Por quê: consultas por relacionamento/navegação e interseção de filtros.
 
-Nós/arestas:
+- Nós/arestas:
 
-Nós: (:User {id}), (:Title {id,titulo,tipo}), (:Genre {nome}), (:Actor {nome})
+  - Nós: (:User {id}), (:Title {id,titulo,tipo}), (:Genre {nome}), (:Actor {nome})
 
-Arestas: (:User)-[:GOSTOU]->(:Title), (:Title)-[:PERTENCE_A]->(:Genre), (:Actor)-[:ATUOU_EM]->(:Title)
+  - Arestas: (:User)-[:GOSTOU]->(:Title), (:Title)-[:PERTENCE_A]->(:Genre), (:Actor)-[:ATUOU_EM]->(:Title)
 
-No S2: Neo4j-first para filtros (generos, ator, curtidos):
+- No S2: Neo4j-first para filtros (generos, ator, curtidos):
 
-Consulta o grafo e calcula IDs (fazendo interseção quando há mais de um filtro).
+  - Consulta o grafo e calcula IDs (fazendo interseção quando há mais de um filtro).
 
-Com esses IDs, busca os docs no Mongo e retorna ao S1.
-
-⚙️ Implementação do S2 (FastAPI)
+  - Com esses IDs, busca os docs no Mongo e retorna ao S1.
+---
+## ⚙️ Implementação do S2 (FastAPI)
 
 Rotas principais:
 
@@ -109,7 +109,7 @@ Busca por _id funciona com ObjectId ou string (pipeline com $toString).
 
 startup cria constraints/índices e semente mínima.
 
-🖥️ Execução do projeto
+## 🖥️ Execução do projeto
 0) Pré-requisitos
 
 Python 3.11+
@@ -180,7 +180,7 @@ Entre como admin → Admin → cadastre títulos (filme/série).
 
 No Catálogo: busque por q, filtre por Gêneros/Ator, clique Gostei ❤️ e use o filtro Curtidos.
 
-🧭 Funcionalidades
+## 🧭 Funcionalidades
 
 Login/Cadastro (Supabase/Postgres).
 
