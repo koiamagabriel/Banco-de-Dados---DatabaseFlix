@@ -18,20 +18,19 @@ Escolhemos streaming porque divide naturalmente o problema em partes com necessi
 ## 🧱 Arquitetura (S1/S2 e bancos)
 
 graph LR
-  UI[S1 - UI (Streamlit)] <--> API[S2 - FastAPI]
+- UI[S1 - UI (Streamlit)] <--> API[S2 - FastAPI]
   
-  API <--> RDB[(Supabase/Postgres)]
+- API <--> RDB[(Supabase/Postgres)]
   
-  API <--> DOC[(MongoDB - Catálogo)]
+- API <--> DOC[(MongoDB - Catálogo)]
   
-  API <--> GRAFO[(Neo4j - Relações)]
+- API <--> GRAFO[(Neo4j - Relações)]
 
-  
-S1 (Streamlit): interface “tipo site” em Python (sem HTML/CSS), com telas de Login, Cadastro, Catálogo, Detalhe e Admin.
+- S1 (Streamlit): interface “tipo site” em Python (sem HTML/CSS), com telas de Login, Cadastro, Catálogo, Detalhe e Admin.
 
-S2 (FastAPI): serviço HTTP que recebe as requisições do S1 e orquestra os bancos.
+- S2 (FastAPI): serviço HTTP que recebe as requisições do S1 e orquestra os bancos.
 
-📚 Justificativa de cada banco & como o S2 usa
+## 📚 Justificativa de cada banco & como o S2 usa
 1) Supabase / PostgreSQL (Relacional)
 
 Por quê: integridade, unicidade de e-mail, transações; ideal para autenticação e logs.
