@@ -19,9 +19,14 @@ Escolhemos streaming porque divide naturalmente o problema em partes com necessi
 
 graph LR
   UI[S1 - UI (Streamlit)] <--> API[S2 - FastAPI]
+  
   API <--> RDB[(Supabase/Postgres)]
+  
   API <--> DOC[(MongoDB - Catálogo)]
+  
   API <--> GRAFO[(Neo4j - Relações)]
+
+  
 S1 (Streamlit): interface “tipo site” em Python (sem HTML/CSS), com telas de Login, Cadastro, Catálogo, Detalhe e Admin.
 
 S2 (FastAPI): serviço HTTP que recebe as requisições do S1 e orquestra os bancos.
