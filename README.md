@@ -1,15 +1,13 @@
 # DatabaseFlix — Plataforma de streaming 
----
 
 ## Tema escolhido 
 
-  Escolhemos uma plataforma de streaming porque ela reflete um cenário em que diferentes partes do sistema têm multiplas necessidades. O cadastro e a autenticação de usuários exigem uma das maiores funcionalidades de um banco de dadados; O catálogo de títulos precisa de flexibilidade de multiplas informações para funcionar, além de integrar completamente com os bancos com sua funcionalidade de realizar buscas de obras; A experiência do usuário utiliza relacionamentos claros entre pessoas, obras, gêneros e atores, esse conjunto de requisitos nos permite aplicar, três tipos de bancos de dados – relacional, documentos e grafo – e mostrar na prática como a escolha do banco é guiada pelo tipo de dado e pelo padrão de consulta que a aplicação realiza.
+  Escolhemos uma plataforma de streaming porque ela reflete um cenário em que diferentes partes do sistema têm multiplas necessidades. O cadastro e a autenticação de usuários exigem uma das maiores funcionalidades de um banco de dados; O catálogo de títulos precisa de flexibilidade de multiplas informações para funcionar, além de integrar completamente com os bancos com sua funcionalidade de realizar buscas de obras; A experiência do usuário utiliza relacionamentos claros entre pessoas, obras, gêneros e atores, esse conjunto de requisitos nos permite aplicar, três tipos de bancos de dados – relacional, documentos e grafo – e mostrar na prática como a escolha do banco é guiada pelo tipo de dado e pelo padrão de consulta que a aplicação realiza.
 
 ---
 
 ## Arquitetura (S1/S2 e bancos)
 
-graph LR  
 - UI[S1 - UI (Streamlit)] <--> API[S2 - FastAPI]  
 - API <--> RDB[(Supabase/Postgres)]  
 - API <--> DOC[(MongoDB - Catálogo)]  
@@ -67,11 +65,6 @@ graph LR
     - `GET /admin/titulos/lista` → lista simplificada de títulos para exclusão.
     - `DELETE /admin/titulos/{id}` → exclui do Mongo e executa `DETACH DELETE` no Neo4j.
 
-Observações de robustez:
-- Compatibilidade quando o campo `disponivel` ainda não existir (legado).
-- Pipeline no Mongo lida com `_id` do tipo `ObjectId` ou string (usando `$toString`).
-- Processo de startup cria índices/constraints e sementes mínimas quando necessário.
-
 ---
 
 ## Como executar o projeto:
@@ -83,19 +76,6 @@ Observações de robustez:
   - Supabase (PostgreSQL) → `SUPABASE_URL`, `SUPABASE_KEY`
   - MongoDB Atlas → `MONGODB_URI`, `MONGODB_DBNAME`
   - Neo4j (AuraDB ou servidor) → `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD`
-
-### Estrutura de pastas
-
-Projeto/
-├─ s1/
-│ └─ app.py
-├─ s2/
-│ └─ main.py
-├─ db/
-  ├─ supabase_rest.py
-  ├─ mongo.py
-  └─ neo4j_db.py
-
 
 ### Instalar dependências
 
@@ -112,18 +92,18 @@ Edite os arquivos:
 - `db/neo4j_db.py` → `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD`
 
 ### Subir o S2 (API)
-= py -m uvicorn s2.main:app --reload --port 8000
+- Abra um terminal:
+  - py -m uvicorn s2.main:app --reload --port 8000
 
 ### Subir o S1 (UI)
-
-Em outro terminal:
-
-Abra o link mostrado (geralmente `http://localhost:8501`).
+- Em outro terminal:
+  - py -m streamlit run s1/app.py
+  - Abra o link mostrado.
 
 ### Primeiro uso
 
 1. Cadastre-se na tela de cadastro.  
-2. Marque o usuário como admin (no Supabase, `usuarios.is_admin=true`, ou via `POST /usuarios` com `is_admin: true`).  
+2. Marque o usuário como admin.  
 3. Acesse a tela Admin e cadastre títulos (filmes ou séries).  
 4. No Catálogo, utilize busca (`q`), filtros por gêneros/ator e o botão de Curtidos; nos cards e nos detalhes há botões de Gostei/Descurtir.
 
