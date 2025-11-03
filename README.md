@@ -88,6 +88,11 @@
 ## Como executar o projeto:
 
 ### Pré-requisitos
+- Baixe o Arquivo zipado do projeto.
+- Configure seus bancos de dados para se adequar ao nosso.
+- Crie as tabelas do supabase a partir do codigo anexado no projeto.
+
+### Pré-requisitos
 
 - Python 3.11 ou superior.
 - Serviços/credenciais ativas:
