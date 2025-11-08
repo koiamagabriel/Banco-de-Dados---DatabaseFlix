@@ -1,4 +1,9 @@
+-- Extensão para gen_random_uuid()
 create extension if not exists pgcrypto;
+
+-- ===========================
+-- Tabelas
+-- ===========================
 create table if not exists public.usuarios (
   id uuid primary key default gen_random_uuid(),
   nome text not null,
@@ -22,7 +27,7 @@ create table if not exists public.log_s1 (
 );
 
 create table if not exists public.planos (
-  codigo text primary key,   
+  codigo text primary key,
   nome text not null,
   descricao text
 );
@@ -64,14 +69,18 @@ create table if not exists public.pagamentos (
   created_at timestamp with time zone default now()
 );
 
+-- ===========================
+-- RLS
+-- ===========================
 alter table public.usuarios     enable row level security;
-alter table public.logs_s1      enable row level security;
+alter table public.log_s1       enable row level security;  -- << corrigido (era logs_s1)
 alter table public.planos       enable row level security;
 alter table public.assinaturas  enable row level security;
 alter table public.pagamentos   enable row level security;
 
 do $$
 begin
+  -- USUÁRIOS
   if not exists (select 1 from pg_policies where tablename='usuarios' and policyname='usuarios_insert_anon') then
     create policy "usuarios_insert_anon" on public.usuarios for insert to anon with check (true);
   end if;
@@ -79,20 +88,24 @@ begin
     create policy "usuarios_select_anon" on public.usuarios for select to anon using (true);
   end if;
 
-  if not exists (select 1 from pg_policies where tablename='logs_s1' and policyname='logs_insert_anon') then
-    create policy "logs_insert_anon" on public.logs_s1 for insert to anon with check (true);
+  -- LOGS (apenas insert pelo client)
+  if not exists (select 1 from pg_policies where tablename='log_s1' and policyname='logs_insert_anon') then  -- << corrigido tablename
+    create policy "logs_insert_anon" on public.log_s1 for insert to anon with check (true);                  -- << corrigido nome da tabela
   end if;
 
+  -- PLANOS (somente leitura)
   if not exists (select 1 from pg_policies where tablename='planos' and policyname='planos_select_anon') then
     create policy "planos_select_anon" on public.planos for select to anon using (true);
   end if;
 
+  -- ASSINATURAS (upsert e select)
   if not exists (select 1 from pg_policies where tablename='assinaturas' and policyname='assinaturas_upsert_anon') then
     create policy "assinaturas_upsert_anon" on public.assinaturas for insert to anon with check (true);
     create policy "assinaturas_update_anon" on public.assinaturas for update to anon using (true) with check (true);
     create policy "assinaturas_select_anon" on public.assinaturas for select to anon using (true);
   end if;
 
+  -- PAGAMENTOS (insert e select mínimo)
   if not exists (select 1 from pg_policies where tablename='pagamentos' and policyname='pagamentos_insert_anon') then
     create policy "pagamentos_insert_anon" on public.pagamentos for insert to anon with check (true);
     create policy "pagamentos_select_anon" on public.pagamentos for select to anon using (true);
